@@ -84,7 +84,7 @@ OK, there's quite a bit of new and potentially confusing stuff in those two code
 6. We inspect the value of `x` again, and it's now `3`.
 7. The final `it.next()` call resumes the `*foo()` generator from where it was paused, and runs the `console.log(..)` statement, which uses the current value of `x` of `3`.
 
-Clearly, `foo()` started, but did *not* run-to-completion -- it paused at the `yield`. We resumed `foo()` later, and let it finish, but that wasn't even required.
+Clearly, `*foo()` started, but did *not* run-to-completion -- it paused at the `yield`. We resumed `*foo()` later, and let it finish, but that wasn't even required.
 
 So, a generator is a special kind of function that can start and stop one or more times, and doesn't necessarily ever have to finish. While it won't be terribly obvious yet why that's so powerful, as we go throughout the rest of this chapter, that will be one of the fundamental building blocks we use to construct generators-as-async-flow-control as a pattern for our code.
 
@@ -1168,12 +1168,12 @@ Hiding your Promise logic inside a function that you merely call from your gener
 
 ```js
 function bar() {
-	Promise.all( [
-		baz( .. )
-		.then( .. ),
-		Promise.race( [ .. ] )
-	] )
-	.then( .. )
+	return	Promise.all( [
+		  baz( .. )
+		  .then( .. ),
+		  Promise.race( [ .. ] )
+		] )
+		.then( .. )
 }
 ```
 
@@ -1566,8 +1566,8 @@ But how will we actually orchestrate this interaction? First, let's just do it m
 var it1 = reqData( "http://some.url.1" );
 var it2 = reqData( "http://some.url.2" );
 
-var p1 = it1.next();
-var p2 = it2.next();
+var p1 = it1.next().value;
+var p2 = it2.next().value;
 
 p1
 .then( function(data){
@@ -1600,8 +1600,8 @@ function *reqData(url) {
 var it1 = reqData( "http://some.url.1" );
 var it2 = reqData( "http://some.url.2" );
 
-var p1 = it1.next();
-var p2 = it2.next();
+var p1 = it1.next().value;
+var p2 = it2.next().value;
 
 p1.then( function(data){
 	it1.next( data );

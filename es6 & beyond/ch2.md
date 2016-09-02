@@ -1135,17 +1135,17 @@ So let's examine if ES6 object destructuring with defaults can help at all:
 ```js
 config.options = config.options || {};
 config.log = config.log || {};
-{
+({
 	options: {
-		remove: config.options.remove = default.options.remove,
-		enable: config.options.enable = default.options.enable,
-		instance: config.options.instance = default.options.instance
+		remove: config.options.remove = defaults.options.remove,
+		enable: config.options.enable = defaults.options.enable,
+		instance: config.options.instance = defaults.options.instance
 	} = {},
 	log: {
-		warn: config.log.warn = default.log.warn,
-		error: config.log.error = default.log.error
+		warn: config.log.warn = defaults.log.warn,
+		error: config.log.error = defaults.log.error
 	} = {}
-} = config;
+} = config);
 ```
 
 Not as nice as the false promise of `Object.assign(..)` (being that it's shallow only), but it's better than the manual approach by a fair bit, I think. It is still unfortunately verbose and repetitive, though.
@@ -1960,7 +1960,7 @@ So now we can conclude a more nuanced set of rules for when `=>` is appropriate 
 * If you have a short, single-statement inline function expression, where the only statement is a `return` of some computed value, *and* that function doesn't already make a `this` reference inside it, *and* there's no self-reference (recursion, event binding/unbinding), *and* you don't reasonably expect the function to ever be that way, you can probably safely refactor it to be an `=>` arrow function.
 * If you have an inner function expression that's relying on a `var self = this` hack or a `.bind(this)` call on it in the enclosing function to ensure proper `this` binding, that inner function expression can probably safely become an `=>` arrow function.
 * If you have an inner function expression that's relying on something like `var args = Array.prototype.slice.call(arguments)` in the enclosing function to make a lexical copy of `arguments`, that inner function expression can probably safely become an `=>` arrow function.
-* For everything else -- normal function declarations, longer multistatment function expressions, functions that need a lexical name identifier self-reference (recursion, etc.), and any other function that doesn't fit the previous characteristics -- you should probably avoid `=>` function syntax.
+* For everything else -- normal function declarations, longer multistatement function expressions, functions that need a lexical name identifier self-reference (recursion, etc.), and any other function that doesn't fit the previous characteristics -- you should probably avoid `=>` function syntax.
 
 Bottom line: `=>` is about lexical binding of `this`, `arguments`, and `super`. These are intentional features designed to fix some common problems, not bugs, quirks, or mistakes in ES6.
 
@@ -2533,7 +2533,7 @@ var s1 = "abc\u0301d",
 [...s3.normalize()][2];			// "𝒞"
 ```
 
-**Warning:** Reminder of an earlier warning: constructing and exhausting an iterator each time you want to get at a single character is... very not ideal, performance wise. Let's hope we get a built-in and optimized utility for this soon, post-ES6.
+**Warning:** Reminder of an earlier warning: constructing and exhausting an iterator each time you want to get at a single character is... not very ideal, performance wise. Let's hope we get a built-in and optimized utility for this soon, post-ES6.
 
 What about a Unicode-aware version of the `charCodeAt(..)` utility? ES6 gives us `codePointAt(..)`:
 
